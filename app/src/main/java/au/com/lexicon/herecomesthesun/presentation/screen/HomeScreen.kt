@@ -24,9 +24,7 @@ import au.com.lexicon.herecomesthesun.presentation.viewmodel.HomeViewModelContra
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.UVRatingGrades
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.Instant
-import java.time.ZoneId
 
 @Composable
 fun HomeScreen(
@@ -47,9 +45,9 @@ fun HomeScreen(
 
     val icon = when (UVRating) {
         UVRatingGrades.UNKNOWN -> R.drawable.ic_sunny
-        UVRatingGrades.NIGHT -> R.drawable.ic_sunny
-        UVRatingGrades.BAD -> R.drawable.ic_sunny
-        UVRatingGrades.OK -> R.drawable.ic_sunny
+        UVRatingGrades.NIGHT -> R.drawable.ic_clear_night
+        UVRatingGrades.BAD -> R.drawable.ic_partly_sunny
+        UVRatingGrades.OK -> R.drawable.ic_mostly_sunny
         UVRatingGrades.GOOD -> R.drawable.ic_sunny
     }
 
@@ -72,7 +70,7 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .height(maxHeight / 10 * 3)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.LightGray)
+                        .background(Color(0xFFF4E1E2))
                         .padding(horizontal = 16.dp, vertical = 16.dp)
                 ) {
                     Column(
@@ -238,23 +236,26 @@ fun HomeScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
+                                .padding(top = 8.dp)
                         ) {
                             Image(
                                 modifier = Modifier
+                                    .size(16.dp)
                                     .clickable {
                                         context.launch {
                                             viewModel.goPreviousTime()
                                         }
                                     },
-                                painter = painterResource(id = R.drawable.ic_arrow_back_black_24dp),
+                                painter = painterResource(id = R.drawable.ic_left_arrow_red),
                                 contentDescription = null,
-                                contentScale = ContentScale.FillWidth
+                                contentScale = ContentScale.Fit
                             )
                         }
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = when (timeFlow) {
@@ -272,7 +273,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = when (timeFlow) {
@@ -290,7 +292,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = when (timeFlow) {
@@ -308,7 +311,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = when (timeFlow) {
@@ -326,7 +330,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = when (timeFlow) {
@@ -344,7 +349,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = when (timeFlow) {
@@ -363,17 +369,19 @@ fun HomeScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
+                                .padding(top = 8.dp)
                         ) {
                             Image(
                                 modifier = Modifier
+                                    .size(16.dp)
                                     .clickable {
                                         context.launch {
                                             viewModel.goNextTime()
                                         }
                                     },
-                                painter = painterResource(id = R.drawable.ic_arrow_back_black_24dp),
+                                painter = painterResource(id = R.drawable.ic_right_arrow_red),
                                 contentDescription = null,
-                                contentScale = ContentScale.FillWidth
+                                contentScale = ContentScale.Fit
                             )
                         }
                     }
@@ -391,7 +399,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment= Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "10%",
@@ -404,7 +413,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment= Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "20%",
@@ -417,7 +427,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment= Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "10%",
@@ -430,7 +441,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment= Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "10%",
@@ -443,7 +455,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment= Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "10%",
@@ -456,7 +469,8 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .weight(2f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            horizontalAlignment= Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = "10%",
