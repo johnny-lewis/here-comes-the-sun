@@ -261,7 +261,7 @@ class HomeViewModel @Inject constructor(
             if (it == 0) 12
             else it
         }
-        return if (hour24 <= 12)
+        return if (hour24 < 12)
             "${time}am"
         else
             "${time}pm"
