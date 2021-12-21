@@ -67,7 +67,7 @@ fun SettingsScreen(
             }, hour, minute, false
     )
     Scaffold(topBar = {
-        SettingsTopBar(color = Color.Gray) {
+        SettingsTopBar(color = Color(0xFF75243D)) {
             goBack()
         }
     }) {
@@ -141,13 +141,14 @@ fun SettingsScreen(
             ) {
                 Image(
                         modifier = Modifier,
-                        painter = painterResource(id = R.drawable.ic_logo),
+                        painter = painterResource(id = R.drawable.ic_logo_black),
                         contentDescription = null,
                         contentScale = ContentScale.Fit
                 )
                 Text("Here comes the sun doo da doo doo", fontWeight = FontWeight.Bold)
                 Text("Adrian")
                 Text("Andy")
+                Text("Brad")
                 Text("Cynthia")
                 Text("Edric")
                 Text("George")
@@ -184,7 +185,7 @@ fun SettingsTopBar(
                             .clickable {
                                 goBack()
                             },
-                    painter = painterResource(id = R.drawable.ic_arrow_back_black_24dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_back_white_24dp),
                     contentDescription = null,
                     contentScale = ContentScale.Fit
             )
@@ -196,7 +197,7 @@ fun SettingsTopBar(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Settings", fontSize = 24.sp)
+            Text("Settings", fontSize = 24.sp, color = Color.White)
         }
         Column(
                 modifier = Modifier
