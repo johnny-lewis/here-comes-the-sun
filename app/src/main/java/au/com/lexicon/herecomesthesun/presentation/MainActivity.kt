@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             NavigationGraph(
                 activity = this
             ).Start(
-                destination = Routes.HomeScreen
+                destination = Routes.LaunchScreen
             )
         }
     }
