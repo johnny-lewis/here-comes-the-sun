@@ -622,7 +622,7 @@ fun TopBar(
                     .clickable {
                         navigateToSettings()
                     },
-                painter = painterResource(id = R.drawable.ic_settings),
+                painter = painterResource(id = R.drawable.ic_settings_white),
                 contentDescription = null,
                 contentScale = ContentScale.Fit
             )
