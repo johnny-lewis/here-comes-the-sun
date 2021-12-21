@@ -3,6 +3,7 @@ package au.com.lexicon.herecomesthesun.presentation.screen
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -15,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import au.com.lexicon.herecomesthesun.R
+import au.com.lexicon.herecomesthesun.presentation.component.DrawSensorGraph
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.HomeViewModelContract
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.UVRatingGrades
 
@@ -37,15 +39,26 @@ fun HomeScreen(
     Scaffold(topBar = {
         TopBar(color = color) { viewModel.goToSettingsScreen() }
     }) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = color.copy(alpha = 0.2f))
+                .background(color = color.copy(alpha = 0f))
+                .padding(horizontal = 24.dp)
         ) {
             Text(
                 text = message,
                 style = MaterialTheme.typography.h5
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(Color.White)
+                    .clip(RoundedCornerShape(10.dp))
+                    .padding(12.dp)
+            ) {
+                DrawSensorGraph(viewModel = viewModel)
+            }
         }
     }
 }
@@ -93,8 +106,8 @@ fun TopBar(
                     .size(28.dp)
                     .clip(CircleShape)
                     .clickable {
-                    navigateToSettings()
-                },
+                        navigateToSettings()
+                    },
                 painter = painterResource(id = R.drawable.ic_settings_black),
                 contentDescription = null,
                 contentScale = ContentScale.Fit
