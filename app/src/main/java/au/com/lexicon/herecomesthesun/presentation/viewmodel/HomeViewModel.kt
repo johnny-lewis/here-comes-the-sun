@@ -1,5 +1,6 @@
 package au.com.lexicon.herecomesthesun.presentation.viewmodel
 
+import android.os.SystemClock
 import androidx.lifecycle.viewModelScope
 import au.com.lexicon.herecomesthesun.domain.model.ForecastDay
 import au.com.lexicon.herecomesthesun.domain.model.GraphPoint
@@ -9,11 +10,11 @@ import au.com.lexicon.herecomesthesun.domain.usecase.ResolveLocationPermissionUs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.hours
 
 typealias HomeNextScreen = () -> Unit
 
@@ -51,9 +52,6 @@ class HomeViewModel @Inject constructor(
 
     private val _locationFlow = MutableStateFlow("-")
     override val locationFlow: StateFlow<String> = _locationFlow.asStateFlow()
-
-    private val _UVFlow = MutableStateFlow(UVRatingGrades.UNKNOWN)
-    override val UVFlow = _UVFlow.asStateFlow()
 
     private val _dayFlow = MutableStateFlow(0)
     override val dayFlow = _dayFlow.asStateFlow()
@@ -121,6 +119,28 @@ class HomeViewModel @Inject constructor(
 
     private val _graphValuesFlow = MutableStateFlow(emptyList<GraphPoint>())
     override val graphValuesFlow = _graphValuesFlow.asStateFlow()
+
+
+    override val UVFlow = combine(_dataDayFlow, dayFlow) { data, day ->
+        if (data.isNotEmpty()) {
+           if (data[day].second < 10) {
+               UVRatingGrades.NIGHT
+           } else if (data[day].second < 40) {
+               UVRatingGrades.BAD
+           } else if (data[day].second < 70) {
+               UVRatingGrades.OK
+           } else {
+               UVRatingGrades.GOOD
+           }
+        } else {
+            UVRatingGrades.UNKNOWN
+        }
+    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = UVRatingGrades.UNKNOWN
+        )
 
     override val yAxisValuesFlow: StateFlow<List<Int>> =
         _graphValuesFlow.map { sensorData ->
