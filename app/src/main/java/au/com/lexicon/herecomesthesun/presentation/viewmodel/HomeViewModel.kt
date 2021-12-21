@@ -62,10 +62,10 @@ class HomeViewModel @Inject constructor(
     private val _timeFlow = MutableStateFlow(0)
     override val timeFlow = _timeFlow.asStateFlow()
 
-    override val dataTimeFlow = combine(_dayFlow, _dataDayFlow) { day, data ->
+    override val dataTimeFlow = combine(_timeFlow, _dataDayFlow) { time, data ->
         if (data.isNotEmpty()) {
-            val dayData = data[day].first
-            when (day) {
+            val dayData = data[time].first
+            when (time) {
                 0 -> {
                     List(size = 6) {
                         (calculateEfficiency(
