@@ -64,7 +64,7 @@ class HomeViewModel @Inject constructor(
 
     override val dataTimeFlow = combine(_timeFlow, _dataDayFlow) { time, data ->
         if (data.isNotEmpty()) {
-            val dayData = data[time].first
+            val dayData = data[_dayFlow.value].first
             when (time) {
                 0 -> {
                     List(size = 6) {
