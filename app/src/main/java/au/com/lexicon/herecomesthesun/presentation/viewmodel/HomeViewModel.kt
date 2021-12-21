@@ -186,8 +186,7 @@ class HomeViewModel @Inject constructor(
                             (sensorData.minByOrNull { it.value }?.value?.minus(yAxisPadding) ?: 0)
                         )
                     } else {
-                        ((sensorData.minByOrNull { it.value }?.value?.minus(yAxisPadding)
-                            ?: 0) / 10 - 1) * 10
+                        0
                     }
                 val values = List(size = 2) {
                     when (it) {
