@@ -117,17 +117,42 @@ class HomeViewModel @Inject constructor(
             initialValue = listOf()
         )
 
-    private val _graphValuesFlow = MutableStateFlow(emptyList<GraphPoint>())
-    override val graphValuesFlow = _graphValuesFlow.asStateFlow()
-
-
-    override val UVFlow = combine(_dataDayFlow, dayFlow) { data, day ->
+    override val graphValuesFlow = dataTimeFlow.map { data ->
         if (data.isNotEmpty()) {
-           if (data[day].second < 10) {
+            List(size = 6) {
+                val value = data[it]
+                GraphPoint(
+                    time = 0,
+                    value = value,
+                    grade = if (value < 10) {
+                        UVRatingGrades.NIGHT
+                    } else if (value < 40) {
+                        UVRatingGrades.BAD
+                    } else if (value < 70) {
+                        UVRatingGrades.OK
+                    } else {
+                        UVRatingGrades.GOOD
+                    }
+                )
+            }
+        } else {
+            emptyList()
+        }
+    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = listOf()
+        )
+
+
+    override val UVFlow = _topEfficienciesFlow.map { data ->
+        if (data.isNotEmpty()) {
+           if (data.first().second.replace("%", "").toInt() < 10) {
                UVRatingGrades.NIGHT
-           } else if (data[day].second < 40) {
+           } else if (data.first().second.replace("%", "").toInt() < 40) {
                UVRatingGrades.BAD
-           } else if (data[day].second < 70) {
+           } else if (data.first().second.replace("%", "").toInt() < 70) {
                UVRatingGrades.OK
            } else {
                UVRatingGrades.GOOD
@@ -143,7 +168,7 @@ class HomeViewModel @Inject constructor(
         )
 
     override val yAxisValuesFlow: StateFlow<List<Int>> =
-        _graphValuesFlow.map { sensorData ->
+        graphValuesFlow.map { sensorData ->
             if (sensorData.isNotEmpty()) {
                 val max =
                     if (sensorData.maxByOrNull { it.value }?.value?.plus(yAxisPadding) ?: 0 >= 0) {
@@ -186,42 +211,6 @@ class HomeViewModel @Inject constructor(
             if (allowed) {
                 getWeather()
             }
-        }
-        viewModelScope.launch {
-            _graphValuesFlow.emit(
-                listOf(
-                    GraphPoint(
-                        time = 0,
-                        value = 10,
-                        grade = UVRatingGrades.BAD
-                    ),
-                    GraphPoint(
-                        time = 1,
-                        value = 90,
-                        grade = UVRatingGrades.GOOD
-                    ),
-                    GraphPoint(
-                        time = 2,
-                        value = 30,
-                        grade = UVRatingGrades.OK
-                    ),
-                    GraphPoint(
-                        time = 3,
-                        value = 10,
-                        grade = UVRatingGrades.BAD
-                    ),
-                    GraphPoint(
-                        time = 4,
-                        value = 50,
-                        grade = UVRatingGrades.OK
-                    ),
-                    GraphPoint(
-                        time = 5,
-                        value = 18,
-                        grade = UVRatingGrades.BAD
-                    )
-                )
-            )
         }
     }
 

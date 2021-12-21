@@ -563,11 +563,6 @@ fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data:
     }
 }
 
-
-
-
-
-
 @Composable
 fun RowScope.TableCell(
     text: String,
