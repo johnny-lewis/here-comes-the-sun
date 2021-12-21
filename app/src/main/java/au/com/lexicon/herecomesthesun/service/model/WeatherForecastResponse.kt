@@ -36,7 +36,7 @@ data class WeatherForecastCondition(
 )
 
 data class WeatherForecastDay(
-    val date_epoch: Int,
+    val date_epoch: Long,
     val day: WeatherForecastDayData,
     val hour: List<WeatherForecastHour>
 )

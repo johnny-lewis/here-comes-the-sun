@@ -48,10 +48,17 @@ enum class WeatherCondition {
 }
 
 data class ForecastDay(
+    val date: Instant,
     val maxTemp: Double,
+    val minTemp: Double,
+    val avgTemp: Double,
+    val uv: Double,
     val hours: List<ForecastHour>
 )
 
 data class ForecastHour(
-    val time: Instant
+    val time: Instant,
+    val temperature: Double,
+    val cloud: Int,
+    val uv: Double
 )

@@ -1,7 +1,6 @@
 package au.com.lexicon.herecomesthesun.service
 
 import android.Manifest
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -34,7 +33,7 @@ class PermissionService : Permission {
         locationPermissionCallback = callback
         ActivityCompat.requestPermissions(
             context as Activity,
-            arrayOf(ACCESS_FINE_LOCATION),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
             LOCATION_REQUEST_CODE
         )
     }

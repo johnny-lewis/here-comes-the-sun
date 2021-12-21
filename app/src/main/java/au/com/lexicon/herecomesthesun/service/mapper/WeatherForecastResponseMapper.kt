@@ -30,7 +30,11 @@ private fun WeatherForecastCurrent.mapToDomain(): CurrentWeather =
 
 private fun WeatherForecastDay.mapToDomain(): ForecastDay =
     ForecastDay(
+        date = Instant.ofEpochSecond(date_epoch),
         maxTemp = day.maxtemp_c,
+        minTemp = day.mintemp_c,
+        avgTemp = day.avgtemp_c,
+        uv = day.uv,
         hours = hour.map {
             it.mapToDomain()
         }
@@ -38,5 +42,8 @@ private fun WeatherForecastDay.mapToDomain(): ForecastDay =
 
 private fun WeatherForecastHour.mapToDomain(): ForecastHour =
     ForecastHour(
-        time = Instant.ofEpochSecond(time_epoch)
+        time = Instant.ofEpochSecond(time_epoch),
+        temperature = temp_c,
+        cloud = cloud,
+        uv = uv
     )
