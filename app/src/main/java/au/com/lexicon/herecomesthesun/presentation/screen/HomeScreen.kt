@@ -2,6 +2,8 @@ package au.com.lexicon.herecomesthesun.presentation.screen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -17,10 +19,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import au.com.lexicon.herecomesthesun.R
+import au.com.lexicon.herecomesthesun.domain.model.ForecastDay
+import au.com.lexicon.herecomesthesun.domain.model.ForecastHour
 import au.com.lexicon.herecomesthesun.presentation.component.DrawSensorGraph
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.HomeViewModelContract
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.UVRatingGrades
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.time.Instant
+import java.time.ZoneId
 
 @Composable
 fun HomeScreen(
@@ -51,9 +58,9 @@ fun HomeScreen(
         TopBar { viewModel.goToSettingsScreen() }
     }) {
         BoxWithConstraints {
-            
+
             val maxHeight = this.maxHeight
-            
+
             Column( //screen holder
                 modifier = Modifier
                     .fillMaxSize()
@@ -467,8 +474,8 @@ fun HomeScreen(
                         ) {}
                     }
                 }
-                
-                
+
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -480,8 +487,72 @@ fun HomeScreen(
                     DrawSensorGraph(viewModel = viewModel)
                 }
             }
+
+            TableScreen()
         }
     }
+}
+
+
+
+@Composable
+fun TableScreen() {
+    // Just a fake data... a Pair of Int and String
+    val tableData = (1..5).mapIndexed { index, item ->
+        index to "Item $index"
+    }
+
+    val forecast_hour = ForecastHour(Instant.now(), 23.00, 40, 3.00)
+
+    val list = MutableList(5) {index -> forecast_hour}
+
+//    Timber.i(list.toString())
+
+    val forecast_day = ForecastDay(Instant.now(), 25.00, 19.00, 23.00, 3.00, list)
+
+//    Timber.i(forecast_day.toString())
+
+    val forecast_list = MutableList(5) {index -> forecast_day}
+
+    // Each cell of a column must have the same weight.
+    val column1Weight = .3f // 30%
+    val column2Weight = .7f // 70%
+    // The LazyColumn will be our table. Notice the use of the weights below
+
+
+
+    Row(Modifier.background(Color.Gray)){
+
+        forecast_list.forEach {
+            TableCell(text = "${it.date.atZone(ZoneId.systemDefault()).dayOfWeek}", weight = column1Weight)
+
+        } }
+    Row(){
+
+        forecast_list.forEach {
+            TableCell(text = "${it.uv}", weight = column1Weight)
+
+        } }
+}
+
+
+
+
+
+
+@Composable
+fun RowScope.TableCell(
+    text: String,
+    weight: Float
+) {
+    Text(
+        text = text,
+        Modifier
+            .border(1.dp, Color.Black)
+            .weight(weight)
+            .padding(8.dp),
+        fontSize = 10.sp,
+        )
 }
 
 @Composable

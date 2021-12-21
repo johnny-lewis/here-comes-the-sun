@@ -9,7 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.Instant
+import java.time.ZoneId
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 typealias HomeNextScreen = () -> Unit
 
@@ -134,11 +137,11 @@ class HomeViewModel @Inject constructor(
 
     private fun getWeather() = viewModelScope.launch {
         getCurrentLocation()?.let { location ->
-            val result = getWeatherData(
+            getWeatherData(
                 geoLocationData = location
-            )
-
-            Timber.i("++++ Weather data", result)
+            )?.let { weatherData ->
+                println("++++ today max: ${weatherData.forecast.first().maxTemp}")
+            }
         }
     }
 
@@ -173,6 +176,53 @@ class HomeViewModel @Inject constructor(
     fun ceilToTen(num: Int): Int {
         return (num / 10 + 1) * 10
     }
+
+    // region Efficiency calculations
+
+    private fun calculateCloudMultiplier(cloud: Int): Double =
+        -0.01 * cloud + 1
+
+    private fun calculateTemperatureMultiplier(temp: Double) =
+        if (temp <= 10 || (temp > 35 && temp <= 40)) {
+            0.8
+        } else if ((temp > 10 && temp <= 20) || (temp < 30 && temp <= 35)) {
+            0.9
+        } else if (temp < 20 && temp <= 30) {
+            1.0
+        } else {
+            0.6
+        }
+
+    private fun calculateTimeMultiplier(time: Instant): Double =
+        time.atZone(ZoneId.systemDefault()).hour.let { hour24 ->
+            if (hour24 < 9 || hour24 >= 17) {
+                0.0
+            } else if ((hour24 in 9..10) || hour24 in 15..16) {
+                0.75
+            } else {
+                1.0
+            }
+        }
+
+    private fun calculateUVMultiplier(uv: Double): Double =
+        uv.roundToInt().let {
+            if (it >= 12) {
+                0.8
+            } else if (it >= 9) {
+                0.9
+            } else if (it >= 6) {
+                1.0
+            } else if (it >= 4) {
+                0.9
+            } else {
+                0.8
+            }
+        }
+
+    private fun calculateEfficiency(uv: Double, cloud: Int, temp: Double, time: Instant) =
+        (calculateUVMultiplier(uv) + calculateCloudMultiplier(cloud) + calculateTemperatureMultiplier(temp)) * (1/3) * calculateTimeMultiplier(time)
+
+    // endregion
 }
 
 enum class UVRatingGrades {

@@ -44,11 +44,13 @@ fun LaunchScreen(
         viewModel.goToHomeScreen()
     }
 
-    Box(contentAlignment = Alignment.Center,
-            modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFF0F2EC))
-                    .rotate(angle)) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFFFFFA7))
+                .rotate(angle)
+    ) {
         Image(
                 modifier = Modifier,
                 painter = painterResource(id = R.drawable.ic_splash),
