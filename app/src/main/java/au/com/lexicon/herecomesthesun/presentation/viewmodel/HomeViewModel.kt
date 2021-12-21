@@ -1,6 +1,7 @@
 package au.com.lexicon.herecomesthesun.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import au.com.lexicon.herecomesthesun.domain.model.ForecastDay
 import au.com.lexicon.herecomesthesun.domain.model.GraphPoint
 import au.com.lexicon.herecomesthesun.domain.usecase.GetCurrentLocationUseCase
 import au.com.lexicon.herecomesthesun.domain.usecase.GetWeatherDataUseCase
@@ -19,7 +20,9 @@ typealias HomeNextScreen = () -> Unit
 interface HomeViewModelContract {
     val UVFlow: StateFlow<UVRatingGrades>
     val dayFlow: StateFlow<Int>
+    val dataDayFlow: StateFlow<List<Pair<ForecastDay, Double>>>
     val timeFlow: StateFlow<Int>
+    val dataTimeFlow: StateFlow<List<Double>>
     val graphValuesFlow: StateFlow<List<GraphPoint>>
     val yAxisValuesFlow: StateFlow<List<Int>>
     fun setSettingsScreen(next: HomeNextScreen)
@@ -46,8 +49,66 @@ class HomeViewModel @Inject constructor(
     private val _dayFlow = MutableStateFlow(0)
     override val dayFlow = _dayFlow.asStateFlow()
 
+    private val _dataDayFlow = MutableStateFlow(emptyList<Pair<ForecastDay, Double>>())
+    override val dataDayFlow = _dataDayFlow.asStateFlow()
+
     private val _timeFlow = MutableStateFlow(0)
     override val timeFlow = _timeFlow.asStateFlow()
+
+    override val dataTimeFlow = combine(_dayFlow, _dataDayFlow) { day, data ->
+        if (data.isNotEmpty()) {
+            val dayData = data[day].first
+            when (day) {
+                0 -> {
+                    List(size = 6) {
+                        calculateEfficiency(
+                            uv = dayData.hours[it].uv,
+                            cloud = dayData.hours[it].cloud,
+                            temp = dayData.hours[it].temperature,
+                            time = dayData.hours[it].time
+                        )
+                    }
+                }
+                1 -> {
+                    List(size = 6) {
+                        calculateEfficiency(
+                            uv = dayData.hours[it + 6].uv,
+                            cloud = dayData.hours[it].cloud,
+                            temp = dayData.hours[it].temperature,
+                            time = dayData.hours[it].time
+                        )
+                    }
+                }
+                2 -> {
+                    List(size = 6) {
+                        calculateEfficiency(
+                            uv = dayData.hours[it + 12].uv,
+                            cloud = dayData.hours[it].cloud,
+                            temp = dayData.hours[it].temperature,
+                            time = dayData.hours[it].time
+                        )
+                    }
+                }
+                else -> {
+                    List(size = 6) {
+                        calculateEfficiency(
+                            uv = dayData.hours[it + 18].uv,
+                            cloud = dayData.hours[it].cloud,
+                            temp = dayData.hours[it].temperature,
+                            time = dayData.hours[it].time
+                        )
+                    }
+                }
+            }
+        } else {
+            emptyList()
+        }
+    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = listOf()
+        )
 
     private val _graphValuesFlow = MutableStateFlow(emptyList<GraphPoint>())
     override val graphValuesFlow = _graphValuesFlow.asStateFlow()
@@ -141,6 +202,19 @@ class HomeViewModel @Inject constructor(
                 geoLocationData = location
             )?.let { weatherData ->
                 println("++++ today max: ${weatherData.forecast.first().maxTemp}")
+                _dataDayFlow.emit(
+                    List(size = weatherData.forecast.size) {
+                        Pair(
+                            weatherData.forecast[it],
+                            calculateEfficiency(
+                                uv = weatherData.forecast[it].uv,
+                                cloud = weatherData.forecast[it].hours.first().cloud,
+                                temp = weatherData.forecast[it].avgTemp,
+                                time = weatherData.forecast[it].hours[12].time
+                            )
+                        )
+                    }
+                )
             }
         }
     }
