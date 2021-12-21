@@ -36,8 +36,6 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel<HomeNextScreen>(), HomeViewModelContract {
 
     companion object {
-        private val UV_MULTIPLIER = listOf(0.8, 0.8, 0.8, 0.9, 0.9, 1, 1, 1, 0.9, 0.9, 0.9, 0.8, 0.8)
-
         private const val yAxisPadding = 3
     }
 
