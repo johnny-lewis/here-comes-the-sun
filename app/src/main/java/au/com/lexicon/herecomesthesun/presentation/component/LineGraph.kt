@@ -27,23 +27,24 @@ import au.com.lexicon.herecomesthesun.presentation.component.GraphConstants.Y_AX
 import au.com.lexicon.herecomesthesun.presentation.component.GraphConstants.Y_AXIS_START_PADDING
 import au.com.lexicon.herecomesthesun.presentation.component.GraphConstants.Y_AXIS_TOP_PADDING
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.HomeViewModelContract
-import kotlin.math.roundToInt
+import au.com.lexicon.herecomesthesun.presentation.viewmodel.UVRatingGrades
 
 private data class Point(
     val x: Float,
     val y: Float,
+    val grade: UVRatingGrades
 )
 
 private object GraphConstants {
-    const val HOURS_IN_DAY_ZERO_INDEX: Float = 23f
+    const val HOURS_IN_DAY_ZERO_INDEX: Float = 5f
 
     const val X_AXIS_START_PADDING: Float = 82f
     const val X_AXIS_END_PADDING: Float = 48f
     const val X_AXIS_POINT_OFFSET: Float = 0f
 
     const val Y_AXIS_START_PADDING: Float = 32f
-    const val Y_AXIS_TOP_PADDING: Float = 194f
-    const val Y_AXIS_BOTTOM_PADDING: Float = 72f
+    const val Y_AXIS_TOP_PADDING: Float = 24f
+    const val Y_AXIS_BOTTOM_PADDING: Float = 24f
 
     const val Y_AXIS_LINE_VERT_PADDING: Float = 12f
     const val Y_AXIS_LINE_HOR_PADDING: Float = 46f
@@ -56,7 +57,6 @@ private object GraphConstants {
 fun DrawSensorGraph(viewModel: HomeViewModelContract) {
     val dataPerDay by viewModel.graphValuesFlow.collectAsState()
     val yAxisLabels by viewModel.yAxisValuesFlow.collectAsState()
-    val selectedDay by viewModel.dayFlow.collectAsState()
 
 
 
@@ -97,7 +97,6 @@ fun DrawSensorGraph(viewModel: HomeViewModelContract) {
                 xValueOffset = X_AXIS_POINT_OFFSET,
                 currentIncrement = null,
                 absoluteOpacity = ABSOLUTE_MASK_OPACITY,
-                lineColour = Color.Black
             )
         }
     }
@@ -116,7 +115,6 @@ fun plotPoints(
     xValueOffset: Float,
     currentIncrement: Int?,
     absoluteOpacity: Float,
-    lineColour: Color
 ) {
     drawScope.run {
         val pointsInPath: MutableList<Point> = mutableListOf()
@@ -137,13 +135,13 @@ fun plotPoints(
                     else -> (canvasWidth / incrementsPerPeriod * i) + xStartPadding + xValueOffset
                 },
                 y = determineYPoint(
-                    index = i,
+                    yValue = dataPerDay[i].value,
                     canvasHeight = canvasHeight,
                     yAxisLabels = yAxisLabels,
-                    dataPerDay = dataPerDay,
                     yAxisTopPadding = yAxisTopPadding,
                     yAxisLineVertPadding = yAxisLineVertPadding
-                )
+                ),
+                grade = dataPerDay[i].grade
             )
 
             highestPoint = highestPoint?.let { highPoint ->
@@ -159,15 +157,56 @@ fun plotPoints(
                 currentPath.moveTo(point.x, point.y)
                 pointsInPath.add(point)
             } else {
-                currentPath.lineTo(point.x, point.y)
-                pointsInPath.add(point)
+                if (pointsInPath.last().grade != point.grade) {
+                    val prevPoint = pointsInPath.last()
+                    val midPoint = Point(
+                        x = prevPoint.x + ((point.x - prevPoint.x) / 2),
+                        y = prevPoint.y + ((point.y - prevPoint.y) / 2),
+                        grade = prevPoint.grade
+                            )
+
+                    currentPath.lineTo(midPoint.x, midPoint.y)
+                    pointsInPath.add(midPoint)
+
+                    drawPathFromPoints(
+                        drawScope = this,
+                        path = currentPath,
+                        lineColour = getLineColour(prevPoint.grade)
+                    )
+
+                    completePathAndColour(
+                        drawScope = this,
+                        highestY = highestPoint.y,
+                        lowestY = calculateYPoint(
+                            canvasHeight = canvasHeight,
+                            yAxisLabels = yAxisLabels,
+                            yValue = yAxisLabels.last(),
+                            yAxisTopPadding = yAxisTopPadding,
+                            yAxisLineVertPadding = yAxisLineVertPadding
+                        ),
+                        path = currentPath,
+                        points = pointsInPath,
+                        absoluteOpacity = absoluteOpacity,
+                        color = getLineColour(prevPoint.grade)
+                    )
+
+                    pointsInPath.clear()
+                    currentPath = Path()
+                    currentPath.moveTo(midPoint.x, midPoint.y)
+                    pointsInPath.add(midPoint)
+                    currentPath.lineTo(point.x, point.y)
+                    pointsInPath.add(point)
+                } else {
+                    currentPath.lineTo(point.x, point.y)
+                    pointsInPath.add(point)
+                }
             }
         }
 
         drawPathFromPoints(
             drawScope = this,
             path = currentPath,
-            lineColour = lineColour
+            lineColour = getLineColour(pointsInPath.last().grade)
         )
 
         completePathAndColour(
@@ -183,20 +222,18 @@ fun plotPoints(
             path = currentPath,
             points = pointsInPath,
             absoluteOpacity = absoluteOpacity,
+            color = getLineColour(pointsInPath.last().grade)
         )
     }
 }
 
 private fun determineYPoint(
-    index: Int,
+    yValue: Int,
     canvasHeight: Float,
     yAxisLabels: List<Int>,
-    dataPerDay: List<GraphPoint>,
     yAxisTopPadding: Float,
     yAxisLineVertPadding: Float
 ): Float {
-    val yValue: Int = dataPerDay[index].value
-
     return calculateYPoint(
         canvasHeight = canvasHeight,
         yAxisLabels = yAxisLabels,
@@ -241,7 +278,8 @@ private fun completePathAndColour(
     lowestY: Float,
     path: Path,
     points: List<Point>,
-    absoluteOpacity: Float
+    absoluteOpacity: Float,
+    color: Color
 ) {
     drawScope.run {
         path.lineTo(points.last().x, lowestY)
@@ -253,10 +291,10 @@ private fun completePathAndColour(
             drawRect(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color.Black.copy(
+                        color.copy(
                             alpha = absoluteOpacity
                         ),
-                        Color.Black.copy(
+                        color.copy(
                             alpha = 0f
                         )
                     )
@@ -324,3 +362,12 @@ private fun drawYAxisLine(drawScope: DrawScope, yPosition: Float) {
 private fun checkOffset(offset: Float, endPoint: Float): Boolean {
     return X_AXIS_START_PADDING < offset && offset < endPoint
 }
+
+private fun getLineColour(grade: UVRatingGrades): Color =
+    when (grade) {
+        UVRatingGrades.UNKNOWN -> Color.Gray
+        UVRatingGrades.NIGHT -> Color.Black
+        UVRatingGrades.BAD -> Color.Yellow
+        UVRatingGrades.OK -> Color.Magenta
+        UVRatingGrades.GOOD -> Color.Red
+    }

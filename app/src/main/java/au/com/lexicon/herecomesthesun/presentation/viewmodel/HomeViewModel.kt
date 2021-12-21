@@ -16,6 +16,7 @@ interface HomeViewModelContract {
     val messageFlow: SharedFlow<String>
     val UVFlow: StateFlow<UVRatingGrades>
     val dayFlow: StateFlow<Int>
+    val timeFlow: StateFlow<Int>
     val graphValuesFlow: StateFlow<List<GraphPoint>>
     val yAxisValuesFlow: StateFlow<List<Int>>
     fun setSettingsScreen(next: HomeNextScreen)
@@ -40,6 +41,9 @@ class HomeViewModel @Inject constructor(
 
     private val _dayFlow = MutableStateFlow(0)
     override val dayFlow = _dayFlow.asStateFlow()
+
+    private val _timeFlow = MutableStateFlow(0)
+    override val timeFlow = _timeFlow.asStateFlow()
 
     private val _graphValuesFlow = MutableStateFlow(emptyList<GraphPoint>())
     override val graphValuesFlow = _graphValuesFlow.asStateFlow()
@@ -66,10 +70,9 @@ class HomeViewModel @Inject constructor(
                         ((sensorData.minByOrNull { it.value }?.value?.minus(yAxisPadding)
                             ?: 0) / 10 - 1) * 10
                     }
-                val values = List(size = 3) {
+                val values = List(size = 2) {
                     when (it) {
                         0 -> max
-                        1 -> min + ((max - min) / 2)
                         else -> min
                     }
                 }
@@ -91,6 +94,40 @@ class HomeViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
+            _graphValuesFlow.emit(
+                listOf(
+                    GraphPoint(
+                        time = 0,
+                        value = 10,
+                        grade = UVRatingGrades.NIGHT
+                    ),
+                    GraphPoint(
+                        time = 1,
+                        value = 90,
+                        grade = UVRatingGrades.GOOD
+                    ),
+                    GraphPoint(
+                        time = 2,
+                        value = 30,
+                        grade = UVRatingGrades.OK
+                    ),
+                    GraphPoint(
+                        time = 3,
+                        value = 10,
+                        grade = UVRatingGrades.NIGHT
+                    ),
+                    GraphPoint(
+                        time = 4,
+                        value = 50,
+                        grade = UVRatingGrades.OK
+                    ),
+                    GraphPoint(
+                        time = 5,
+                        value = 18,
+                        grade = UVRatingGrades.NIGHT
+                    )
+                )
+            )
             delay(2000)
             _UVFlow.emit(UVRatingGrades.NIGHT)
             delay(2000)
