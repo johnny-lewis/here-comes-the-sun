@@ -61,8 +61,8 @@ class NavigationGraph(
     private fun NavGraphBuilder.addSettingsScreen(navController: NavController) {
         composable(route = Routes.SettingsScreen.route) {
             SettingsScreen(
-                    viewModel = settingsViewModel,
-                    goBack = { navController.popBackStack() }
+                viewModel = settingsViewModel,
+                goBack = { navController.popBackStack() }
             )
         }
     }

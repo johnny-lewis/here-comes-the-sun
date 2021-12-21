@@ -47,7 +47,7 @@ fun LaunchScreen(
     Box(contentAlignment = Alignment.Center,
             modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFA52A2A))
+                    .background(Color(0xFFF0F2EC))
                     .rotate(angle)) {
         Image(
                 modifier = Modifier,
