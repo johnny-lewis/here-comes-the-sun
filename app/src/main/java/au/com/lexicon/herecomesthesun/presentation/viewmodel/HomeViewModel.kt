@@ -20,9 +20,9 @@ typealias HomeNextScreen = () -> Unit
 interface HomeViewModelContract {
     val UVFlow: StateFlow<UVRatingGrades>
     val dayFlow: StateFlow<Int>
-    val dataDayFlow: StateFlow<List<Pair<ForecastDay, Double>>>
+    val dataDayFlow: StateFlow<List<Pair<ForecastDay, Int>>>
     val timeFlow: StateFlow<Int>
-    val dataTimeFlow: StateFlow<List<Double>>
+    val dataTimeFlow: StateFlow<List<Int>>
     val graphValuesFlow: StateFlow<List<GraphPoint>>
     val yAxisValuesFlow: StateFlow<List<Int>>
     fun setSettingsScreen(next: HomeNextScreen)
@@ -49,7 +49,7 @@ class HomeViewModel @Inject constructor(
     private val _dayFlow = MutableStateFlow(0)
     override val dayFlow = _dayFlow.asStateFlow()
 
-    private val _dataDayFlow = MutableStateFlow(emptyList<Pair<ForecastDay, Double>>())
+    private val _dataDayFlow = MutableStateFlow(emptyList<Pair<ForecastDay, Int>>())
     override val dataDayFlow = _dataDayFlow.asStateFlow()
 
     private val _timeFlow = MutableStateFlow(0)
@@ -61,42 +61,42 @@ class HomeViewModel @Inject constructor(
             when (day) {
                 0 -> {
                     List(size = 6) {
-                        calculateEfficiency(
+                        (calculateEfficiency(
                             uv = dayData.hours[it].uv,
                             cloud = dayData.hours[it].cloud,
                             temp = dayData.hours[it].temperature,
                             time = dayData.hours[it].time
-                        )
+                        )* 100 ).roundToInt()
                     }
                 }
                 1 -> {
                     List(size = 6) {
-                        calculateEfficiency(
+                        (calculateEfficiency(
                             uv = dayData.hours[it + 6].uv,
                             cloud = dayData.hours[it].cloud,
                             temp = dayData.hours[it].temperature,
                             time = dayData.hours[it].time
-                        )
+                        )* 100 ).roundToInt()
                     }
                 }
                 2 -> {
                     List(size = 6) {
-                        calculateEfficiency(
+                        (calculateEfficiency(
                             uv = dayData.hours[it + 12].uv,
                             cloud = dayData.hours[it].cloud,
                             temp = dayData.hours[it].temperature,
                             time = dayData.hours[it].time
-                        )
+                        )* 100 ).roundToInt()
                     }
                 }
                 else -> {
                     List(size = 6) {
-                        calculateEfficiency(
+                        (calculateEfficiency(
                             uv = dayData.hours[it + 18].uv,
                             cloud = dayData.hours[it].cloud,
                             temp = dayData.hours[it].temperature,
                             time = dayData.hours[it].time
-                        )
+                        )* 100 ).roundToInt()
                     }
                 }
             }
@@ -206,12 +206,12 @@ class HomeViewModel @Inject constructor(
                     List(size = weatherData.forecast.size) {
                         Pair(
                             weatherData.forecast[it],
-                            calculateEfficiency(
+                            (calculateEfficiency(
                                 uv = weatherData.forecast[it].uv,
                                 cloud = weatherData.forecast[it].hours.first().cloud,
                                 temp = weatherData.forecast[it].avgTemp,
                                 time = weatherData.forecast[it].hours[12].time
-                            )
+                            )* 100 ).roundToInt()
                         )
                     }
                 )

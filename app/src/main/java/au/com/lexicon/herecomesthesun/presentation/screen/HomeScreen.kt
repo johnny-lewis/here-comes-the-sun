@@ -405,12 +405,7 @@ fun HomeScreen(
                                 horizontalAlignment= Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = when (timeFlow) {
-                                        0 -> timeData[0].toString()
-                                        1 -> timeData[6].toString()
-                                        2 -> timeData[12].toString()
-                                        else -> timeData[18].toString()
-                                    },
+                                    text = timeData[0].toString(),
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -424,12 +419,7 @@ fun HomeScreen(
                                 horizontalAlignment= Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = when (timeFlow) {
-                                        0 -> timeData[1].toString()
-                                        1 -> timeData[7].toString()
-                                        2 -> timeData[13].toString()
-                                        else -> timeData[19].toString()
-                                    },
+                                    text = timeData[1].toString(),
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -443,12 +433,7 @@ fun HomeScreen(
                                 horizontalAlignment= Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = when (timeFlow) {
-                                        0 -> timeData[2].toString()
-                                        1 -> timeData[8].toString()
-                                        2 -> timeData[14].toString()
-                                        else -> timeData[20].toString()
-                                    },
+                                    text = timeData[2].toString(),
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -462,12 +447,7 @@ fun HomeScreen(
                                 horizontalAlignment= Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = when (timeFlow) {
-                                        0 -> timeData[3].toString()
-                                        1 -> timeData[9].toString()
-                                        2 -> timeData[15].toString()
-                                        else -> timeData[21].toString()
-                                    },
+                                    text = timeData[3].toString(),
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -481,12 +461,7 @@ fun HomeScreen(
                                 horizontalAlignment= Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = when (timeFlow) {
-                                        0 -> timeData[4].toString()
-                                        1 -> timeData[10].toString()
-                                        2 -> timeData[16].toString()
-                                        else -> timeData[22].toString()
-                                    },
+                                    text = timeData[4].toString(),
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -500,12 +475,7 @@ fun HomeScreen(
                                 horizontalAlignment= Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = when (timeFlow) {
-                                        0 -> timeData[5].toString()
-                                        1 -> timeData[11].toString()
-                                        2 -> timeData[17].toString()
-                                        else -> timeData[23].toString()
-                                    },
+                                    text = timeData[5].toString(),
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -547,7 +517,7 @@ fun HomeScreen(
 
 
 @Composable
-fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data: List<Pair<ForecastDay, Double>>) {
+fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data: List<Pair<ForecastDay, Int>>) {
     val column1Weight = .3f // 30%
 
     if (data.isNotEmpty()) {
