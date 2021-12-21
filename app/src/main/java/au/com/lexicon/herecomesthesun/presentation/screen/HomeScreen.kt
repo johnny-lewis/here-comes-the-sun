@@ -2,33 +2,45 @@ package au.com.lexicon.herecomesthesun.presentation.screen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import au.com.lexicon.herecomesthesun.R
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.HomeViewModelContract
+import au.com.lexicon.herecomesthesun.presentation.viewmodel.UVRatingGrades
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModelContract
 ) {
     val message by viewModel.messageFlow.collectAsState(initial = "")
+    val UVRating by viewModel.UVFlow.collectAsState()
     var tabIndex by remember { mutableStateOf(0)}
 
+    val color = when (UVRating) {
+        UVRatingGrades.UNKNOWN -> Color.Cyan
+        UVRatingGrades.NIGHT -> Color.Green
+        UVRatingGrades.BAD -> Color.Magenta
+        UVRatingGrades.OK -> Color.Yellow
+        UVRatingGrades.GOOD -> Color.Red
+    }
+
     Scaffold(topBar = {
-        TopBar { viewModel.goToSettingsScreen() }
+        TopBar(color = color) { viewModel.goToSettingsScreen() }
     }) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color.White)
+                .background(color = color.copy(alpha = 0.2f))
         ) {
             Text(
                 text = message,
@@ -40,13 +52,15 @@ fun HomeScreen(
 
 @Composable
 fun TopBar(
+    color: Color,
     navigateToSettings: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
-            .border(BorderStroke(1.dp, Color.Green))
+            .height(60.dp)
+            .background(color = color)
+            .padding(horizontal = 24.dp)
     ) {
         Column (
             modifier = Modifier
@@ -76,10 +90,12 @@ fun TopBar(
             //insert settings
             Image(
                 modifier = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
                     .clickable {
                     navigateToSettings()
                 },
-                painter = painterResource(id = R.drawable.outline_settings_black),
+                painter = painterResource(id = R.drawable.ic_settings_black),
                 contentDescription = null,
                 contentScale = ContentScale.Fit
             )
