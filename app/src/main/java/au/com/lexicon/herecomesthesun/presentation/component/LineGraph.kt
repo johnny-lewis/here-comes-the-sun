@@ -366,8 +366,8 @@ private fun checkOffset(offset: Float, endPoint: Float): Boolean {
 private fun getLineColour(grade: UVRatingGrades): Color =
     when (grade) {
         UVRatingGrades.UNKNOWN -> Color.Gray
-        UVRatingGrades.NIGHT -> Color.Black
-        UVRatingGrades.BAD -> Color.Yellow
-        UVRatingGrades.OK -> Color.Magenta
-        UVRatingGrades.GOOD -> Color.Red
+        UVRatingGrades.NIGHT -> Color(0xFF4791D7)
+        UVRatingGrades.BAD -> Color(0xFFE0A4A8)
+        UVRatingGrades.OK -> Color(0xFFCB676F)
+        UVRatingGrades.GOOD -> Color(0xFFB63E48)
     }
