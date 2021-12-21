@@ -62,8 +62,6 @@ fun HomeScreen(
 
             val maxHeight = this.maxHeight
 
-            println("++++ $topEfficienciesFlow")
-
             Column( //screen holder
                 modifier = Modifier
                     .fillMaxSize()
@@ -107,7 +105,9 @@ fun HomeScreen(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    text = "11am",
+                                    text = if (topEfficienciesFlow.count() == 3)
+                                        topEfficienciesFlow[0].first
+                                    else "-",
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -118,7 +118,9 @@ fun HomeScreen(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    text = "40%",
+                                    text = if (topEfficienciesFlow.count() == 3)
+                                        topEfficienciesFlow[0].second
+                                    else "-",
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -133,7 +135,9 @@ fun HomeScreen(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    text = "11am",
+                                    text = if (topEfficienciesFlow.count() == 3)
+                                        topEfficienciesFlow[1].first
+                                    else "-",
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -144,7 +148,9 @@ fun HomeScreen(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    text = "40%",
+                                    text = if (topEfficienciesFlow.count() == 3)
+                                        topEfficienciesFlow[1].second
+                                    else "-",
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -159,7 +165,9 @@ fun HomeScreen(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    text = "1pm",
+                                    text = if (topEfficienciesFlow.count() == 3)
+                                        topEfficienciesFlow[2].first
+                                    else "-",
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
@@ -170,38 +178,14 @@ fun HomeScreen(
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Text(
-                                    text = "30%",
+                                    text = if (topEfficienciesFlow.count() == 3)
+                                        topEfficienciesFlow[2].second
+                                    else "-",
                                     style = TextStyle(
                                         color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        text = "2pm",
-                                        style = TextStyle(
-                                            color = Color(0xFF754855),
-                                            fontSize = 16.sp
-                                        )
-                                    )
-                                }
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        text = "55%",
-                                        style = TextStyle(
-                                            color = Color(0xFF754855),
-                                            fontSize = 16.sp
-                                        )
-                                    )
-                                }
                             }
                         }
                     }

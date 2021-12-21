@@ -45,7 +45,7 @@ class HomeViewModel @Inject constructor(
         private const val yAxisPadding = 3
     }
 
-    private val currentDayEfficiencies = mutableListOf<Pair<String, Int>>()
+    private val currentDayEfficiencies = mutableListOf<Pair<Int, Int>>()
 
     private val _topEfficienciesFlow = MutableStateFlow(emptyList<Pair<String, String>>())
     override val topEfficienciesFlow: StateFlow<List<Pair<String, String>>> = _topEfficienciesFlow
@@ -236,7 +236,7 @@ class HomeViewModel @Inject constructor(
                 currentDayEfficiencies.clear()
                 weatherData.forecast.first().hours.forEach { forecastHour ->
                     val hour = forecastHour.time.atZone(ZoneId.systemDefault()).hour
-                    currentDayEfficiencies.add(hour.toString() to (calculateEfficiency(
+                    currentDayEfficiencies.add(hour to (calculateEfficiency(
                         uv = forecastHour.uv,
                         cloud = forecastHour.cloud,
                         temp = forecastHour.temperature,
@@ -248,13 +248,24 @@ class HomeViewModel @Inject constructor(
                     it.second
                 }.let {
                     _topEfficienciesFlow.emit(listOf(
-                        it[it.size - 1].first to "${it[it.size - 1].second}%",
-                        it[it.size - 2].first to "${it[it.size - 2].second}%",
-                        it[it.size - 3].first to "${it[it.size - 3].second}%"
+                        to12hr(it[it.size - 1].first) to "${it[it.size - 1].second}%",
+                        to12hr(it[it.size - 2].first) to "${it[it.size - 2].second}%",
+                        to12hr(it[it.size - 3].first) to "${it[it.size - 3].second}%"
                     ))
                 }
             }
         }
+    }
+
+    private fun to12hr(hour24: Int): String {
+        val time = hour24.mod(12).let {
+            if (it == 0) 12
+            else it
+        }
+        return if (hour24 <= 12)
+            "${time}am"
+        else
+            "${time}pm"
     }
 
     override fun setSettingsScreen(next: HomeNextScreen) {
