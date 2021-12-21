@@ -522,11 +522,9 @@ fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data:
                     else -> "Sun"
                 },
                     weight = column1Weight,
-                    onClick = {
-                        context.launch {
-                            viewModel.changeDay(it)
-                        }
-                    }
+                    index = it,
+                    viewModel = viewModel,
+                    context = context
                 )
             }
         }
@@ -535,11 +533,9 @@ fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data:
                 TableCell(
                     text = "${data[it].second}",
                     weight = column1Weight,
-                    onClick = {
-                        context.launch {
-                            viewModel.changeDay(it)
-                        }
-                    }
+                    index = it,
+                    viewModel = viewModel,
+                    context = context
                 )
 
             }
@@ -551,13 +547,19 @@ fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data:
 fun RowScope.TableCell(
     text: String,
     weight: Float,
-    onClick: () -> Unit
+    index: Int,
+    viewModel: HomeViewModelContract,
+    context: CoroutineScope
 ) {
     Text(
         text = text,
         Modifier
             .weight(weight)
-            .clickable { onClick }
+            .clickable {
+                context.launch {
+                    viewModel.changeDay(index)
+                }
+            }
             .padding(8.dp),
         fontSize = 10.sp,
         style = TextStyle(

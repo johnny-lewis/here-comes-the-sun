@@ -62,9 +62,9 @@ class HomeViewModel @Inject constructor(
     private val _timeFlow = MutableStateFlow(0)
     override val timeFlow = _timeFlow.asStateFlow()
 
-    override val dataTimeFlow = combine(_timeFlow, _dataDayFlow) { time, data ->
+    override val dataTimeFlow = combine(_timeFlow, _dataDayFlow, _dayFlow) { time, data, day ->
         if (data.isNotEmpty()) {
-            val dayData = data[_dayFlow.value].first
+            val dayData = data[day].first
             when (time) {
                 0 -> {
                     List(size = 6) {
@@ -288,7 +288,9 @@ class HomeViewModel @Inject constructor(
     }
 
     override suspend fun changeDay(day: Int) {
+        println("+++ ${_dayFlow.value}")
         _dayFlow.emit(day)
+        println("+++ ${_dayFlow.value}")
     }
 
     fun floorToTen(num: Int): Int {
