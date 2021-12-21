@@ -33,6 +33,7 @@ fun HomeScreen(
     val context = rememberCoroutineScope()
     val UVRating by viewModel.UVFlow.collectAsState()
     val timeFlow by viewModel.timeFlow.collectAsState()
+    val dayFlow by viewModel.dayFlow.collectAsState()
     val dayData by viewModel.dataDayFlow.collectAsState()
     val timeData by viewModel.dataTimeFlow.collectAsState()
 
@@ -212,7 +213,12 @@ fun HomeScreen(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "Today", // today
+                            text = when (dayFlow) {
+                                0 -> "Today"
+                                1 -> "Thursday"
+                                2 -> "Friday"
+                                else -> ""
+                                                  }, // today
                             style = TextStyle(
                                 color = Color(0xFF754855),
                                 fontSize = 20.sp
@@ -512,14 +518,14 @@ fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope, data:
     if (data.isNotEmpty()) {
         Row {
             data.indices.forEach {
-                TableCell(text = when (it) {
-                    0 -> "Mon"
-                    1 -> "Tue"
-                    2 -> "Wed"
-                    3 -> "Thu"
-                    4 -> "Fri"
-                    5 -> "Sat"
-                    else -> "Sun"
+                TableCell(text = when (it) { // change to dynamic list with order based on current day if time
+                    0 -> "Wed"
+                    1 -> "Thu"
+                    2 -> "Fri"
+                    3 -> "Sat"
+                    4 -> "Sun"
+                    5 -> "Mon"
+                    else -> "Tue"
                 },
                     weight = column1Weight,
                     index = it,
