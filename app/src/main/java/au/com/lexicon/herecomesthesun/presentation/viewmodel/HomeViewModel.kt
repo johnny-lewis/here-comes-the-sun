@@ -18,6 +18,8 @@ import kotlin.math.roundToInt
 typealias HomeNextScreen = () -> Unit
 
 interface HomeViewModelContract {
+    val locationFlow: StateFlow<String>
+    val topEfficienciesFlow: StateFlow<List<Pair<String, String>>>
     val UVFlow: StateFlow<UVRatingGrades>
     val dayFlow: StateFlow<Int>
     val dataDayFlow: StateFlow<List<Pair<ForecastDay, Int>>>
@@ -34,14 +36,21 @@ interface HomeViewModelContract {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    resolveLocationPermission: ResolveLocationPermissionUseCase,
     private val getCurrentLocation: GetCurrentLocationUseCase,
-    private val resolveLocationPermission: ResolveLocationPermissionUseCase,
     private val getWeatherData: GetWeatherDataUseCase
 ) : BaseViewModel<HomeNextScreen>(), HomeViewModelContract {
-
     companion object {
         private const val yAxisPadding = 3
     }
+
+    private val currentDayEfficiencies = mutableListOf<Pair<String, Int>>()
+
+    private val _topEfficienciesFlow = MutableStateFlow(emptyList<Pair<String, String>>())
+    override val topEfficienciesFlow: StateFlow<List<Pair<String, String>>> = _topEfficienciesFlow
+
+    private val _locationFlow = MutableStateFlow("-")
+    override val locationFlow: StateFlow<String> = _locationFlow.asStateFlow()
 
     private val _UVFlow = MutableStateFlow(UVRatingGrades.UNKNOWN)
     override val UVFlow = _UVFlow.asStateFlow()
@@ -201,7 +210,6 @@ class HomeViewModel @Inject constructor(
             getWeatherData(
                 geoLocationData = location
             )?.let { weatherData ->
-                println("++++ today max: ${weatherData.forecast.first().maxTemp}")
                 _dataDayFlow.emit(
                     List(size = weatherData.forecast.size) {
                         Pair(
@@ -215,6 +223,27 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                 )
+                _locationFlow.emit("${weatherData.location.suburb}, ${weatherData.location.region}")
+                currentDayEfficiencies.clear()
+                weatherData.forecast.first().hours.forEach { forecastHour ->
+                    val hour = forecastHour.time.atZone(ZoneId.systemDefault()).hour
+                    currentDayEfficiencies.add(hour.toString() to (calculateEfficiency(
+                        uv = forecastHour.uv,
+                        cloud = forecastHour.cloud,
+                        temp = forecastHour.temperature,
+                        time = forecastHour.time
+                    ) * 100).roundToInt())
+                }
+
+                currentDayEfficiencies.sortedBy {
+                    it.second
+                }.let {
+                    _topEfficienciesFlow.emit(listOf(
+                        it[it.size - 1].first to "${it[it.size - 1].second}%",
+                        it[it.size - 2].first to "${it[it.size - 2].second}%",
+                        it[it.size - 3].first to "${it[it.size - 3].second}%"
+                    ))
+                }
             }
         }
     }
@@ -294,7 +323,7 @@ class HomeViewModel @Inject constructor(
         }
 
     private fun calculateEfficiency(uv: Double, cloud: Int, temp: Double, time: Instant) =
-        (calculateUVMultiplier(uv) + calculateCloudMultiplier(cloud) + calculateTemperatureMultiplier(temp)) * (1/3) * calculateTimeMultiplier(time)
+        (calculateUVMultiplier(uv) + calculateCloudMultiplier(cloud) + calculateTemperatureMultiplier(temp)) * 0.33 * calculateTimeMultiplier(time)
 
     // endregion
 }

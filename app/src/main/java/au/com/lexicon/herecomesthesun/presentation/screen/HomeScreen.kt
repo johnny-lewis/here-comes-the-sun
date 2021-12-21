@@ -36,6 +36,9 @@ fun HomeScreen(
     val dayData by viewModel.dataDayFlow.collectAsState()
     val timeData by viewModel.dataTimeFlow.collectAsState()
 
+    val locationFlow by viewModel.locationFlow.collectAsState()
+    val topEfficienciesFlow by viewModel.topEfficienciesFlow.collectAsState()
+
     val color = when (UVRating) {
         UVRatingGrades.UNKNOWN -> Color.Cyan
         UVRatingGrades.NIGHT -> Color.Green
@@ -59,6 +62,8 @@ fun HomeScreen(
 
             val maxHeight = this.maxHeight
 
+            println("++++ $topEfficienciesFlow")
+
             Column( //screen holder
                 modifier = Modifier
                     .fillMaxSize()
@@ -81,7 +86,7 @@ fun HomeScreen(
                             .padding(top = 10.dp),
                     ) {
                         Text(
-                            text = "Caufield, VIC",
+                            text = locationFlow,
                             style = TextStyle(
                                 color = Color(0xFFC23C64),
                                 fontSize = 20.sp
