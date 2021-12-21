@@ -80,9 +80,9 @@ class HomeViewModel @Inject constructor(
                     List(size = 6) {
                         (calculateEfficiency(
                             uv = dayData.hours[it + 6].uv,
-                            cloud = dayData.hours[it].cloud,
-                            temp = dayData.hours[it].temperature,
-                            time = dayData.hours[it].time
+                            cloud = dayData.hours[it + 6].cloud,
+                            temp = dayData.hours[it + 6].temperature,
+                            time = dayData.hours[it + 6].time
                         )* 100 ).roundToInt()
                     }
                 }
@@ -90,9 +90,9 @@ class HomeViewModel @Inject constructor(
                     List(size = 6) {
                         (calculateEfficiency(
                             uv = dayData.hours[it + 12].uv,
-                            cloud = dayData.hours[it].cloud,
-                            temp = dayData.hours[it].temperature,
-                            time = dayData.hours[it].time
+                            cloud = dayData.hours[it + 12].cloud,
+                            temp = dayData.hours[it + 12].temperature,
+                            time = dayData.hours[it + 12].time
                         )* 100 ).roundToInt()
                     }
                 }
@@ -100,9 +100,9 @@ class HomeViewModel @Inject constructor(
                     List(size = 6) {
                         (calculateEfficiency(
                             uv = dayData.hours[it + 18].uv,
-                            cloud = dayData.hours[it].cloud,
-                            temp = dayData.hours[it].temperature,
-                            time = dayData.hours[it].time
+                            cloud = dayData.hours[it + 18].cloud,
+                            temp = dayData.hours[it + 18].temperature,
+                            time = dayData.hours[it + 18].time
                         )* 100 ).roundToInt()
                     }
                 }
