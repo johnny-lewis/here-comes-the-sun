@@ -3,11 +3,13 @@ package au.com.lexicon.herecomesthesun.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import au.com.lexicon.herecomesthesun.domain.model.GraphPoint
 import au.com.lexicon.herecomesthesun.domain.usecase.GetCurrentLocationUseCase
+import au.com.lexicon.herecomesthesun.domain.usecase.GetWeatherDataUseCase
 import au.com.lexicon.herecomesthesun.domain.usecase.ResolveLocationPermissionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 typealias HomeNextScreen = () -> Unit
@@ -26,7 +28,8 @@ interface HomeViewModelContract {
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCurrentLocation: GetCurrentLocationUseCase,
-    private val resolveLocationPermission: ResolveLocationPermissionUseCase
+    private val resolveLocationPermission: ResolveLocationPermissionUseCase,
+    private val getWeatherData: GetWeatherDataUseCase
 ) : BaseViewModel<HomeNextScreen>(), HomeViewModelContract {
 
     companion object {
@@ -90,7 +93,7 @@ class HomeViewModel @Inject constructor(
     init {
         resolveLocationPermission { allowed ->
             if (allowed) {
-                showCurrentLocation()
+                getWeather()
             }
         }
         viewModelScope.launch {
@@ -143,6 +146,16 @@ class HomeViewModel @Inject constructor(
         _messageFlow.emit(getCurrentLocation()?.let {
             "Latitude: ${it.latitude}\nLongitude: ${it.longitude}"
         } ?: "Failed to get current location")
+    }
+
+    private fun getWeather() = viewModelScope.launch {
+        getCurrentLocation()?.let { location ->
+            val result = getWeatherData(
+                geoLocationData = location
+            )
+
+            Timber.i("++++ Weather data", result)
+        }
     }
 
     override fun setSettingsScreen(next: HomeNextScreen) {

@@ -15,14 +15,19 @@ import java.io.IOException
 
 import okhttp3.Interceptor
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 
 
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
     companion object {
-        private const val WEATHER_BASE_URL: String = "https://api.weatherapi.com/v1"
+        private const val WEATHER_BASE_URL: String = "https://api.weatherapi.com/v1/"
         const val WEATHER_RETROFIT: String = "WEATHER_RETROFIT"
+    }
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
     @Singleton
@@ -44,9 +49,10 @@ class NetworkModule {
 
     private fun buildWeatherClient(): OkHttpClient =
         OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 var request: Request = chain.request()
-                val url = request.url().newBuilder()
+                val url = request.url.newBuilder()
                     .addQueryParameter("key", BuildConfig.weatherApiKey)
                     .build()
 
@@ -54,5 +60,6 @@ class NetworkModule {
                     .url(url)
                     .build()
                 chain.proceed(request)
-            }.build()
+            }
+            .build()
 }
