@@ -2,8 +2,6 @@ package au.com.lexicon.herecomesthesun.presentation.screen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -24,6 +22,7 @@ import au.com.lexicon.herecomesthesun.domain.model.ForecastHour
 import au.com.lexicon.herecomesthesun.presentation.component.DrawSensorGraph
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.HomeViewModelContract
 import au.com.lexicon.herecomesthesun.presentation.viewmodel.UVRatingGrades
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
@@ -85,7 +84,7 @@ fun HomeScreen(
                         Text(
                             text = "Caufield, VIC",
                             style = TextStyle(
-                                color = Color.Black,
+                                color = Color(0xFFC23C64),
                                 fontSize = 20.sp
                             )
                         )
@@ -93,7 +92,7 @@ fun HomeScreen(
                         Text(
                             text = "Peak Times",
                             style = TextStyle(
-                                color = Color.Black,
+                                color = Color(0xFF754855),
                                 fontSize = 16.sp
                             )
                         )
@@ -106,7 +105,7 @@ fun HomeScreen(
                                 Text(
                                     text = "11am",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -117,7 +116,7 @@ fun HomeScreen(
                                 Text(
                                     text = "40%",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -132,7 +131,7 @@ fun HomeScreen(
                                 Text(
                                     text = "11am",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -143,7 +142,7 @@ fun HomeScreen(
                                 Text(
                                     text = "40%",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -158,7 +157,7 @@ fun HomeScreen(
                                 Text(
                                     text = "1pm",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -169,7 +168,7 @@ fun HomeScreen(
                                 Text(
                                     text = "30%",
                                     style = TextStyle(
-                                        color = Color.Black,
+                                        color = Color(0xFF754855),
                                         fontSize = 16.sp
                                     )
                                 )
@@ -183,7 +182,7 @@ fun HomeScreen(
                                     Text(
                                         text = "2pm",
                                         style = TextStyle(
-                                            color = Color.Black,
+                                            color = Color(0xFF754855),
                                             fontSize = 16.sp
                                         )
                                     )
@@ -194,7 +193,7 @@ fun HomeScreen(
                                     Text(
                                         text = "55%",
                                         style = TextStyle(
-                                            color = Color.Black,
+                                            color = Color(0xFF754855),
                                             fontSize = 16.sp
                                         )
                                     )
@@ -226,7 +225,7 @@ fun HomeScreen(
                     Text(
                         text = "Today", // today
                         style = TextStyle(
-                            color = Color.Black,
+                            color = Color(0xFF754855),
                             fontSize = 20.sp
                         )
                     )
@@ -265,7 +264,7 @@ fun HomeScreen(
                                     else -> "6pm"
                                 },
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -283,7 +282,7 @@ fun HomeScreen(
                                     else -> "7pm"
                                 },
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -301,7 +300,7 @@ fun HomeScreen(
                                     else -> "8pm"
                                 },
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -319,7 +318,7 @@ fun HomeScreen(
                                     else -> "9pm"
                                 },
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -337,7 +336,7 @@ fun HomeScreen(
                                     else -> "10pm"
                                 },
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -355,7 +354,7 @@ fun HomeScreen(
                                     else -> "11pm"
                                 },
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -397,7 +396,7 @@ fun HomeScreen(
                             Text(
                                 text = "10%",
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -410,7 +409,7 @@ fun HomeScreen(
                             Text(
                                 text = "20%",
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -423,7 +422,7 @@ fun HomeScreen(
                             Text(
                                 text = "10%",
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -436,7 +435,7 @@ fun HomeScreen(
                             Text(
                                 text = "10%",
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -449,7 +448,7 @@ fun HomeScreen(
                             Text(
                                 text = "10%",
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -462,7 +461,7 @@ fun HomeScreen(
                             Text(
                                 text = "10%",
                                 style = TextStyle(
-                                    color = Color.Black,
+                                    color = Color(0xFF754855),
                                     fontSize = 16.sp
                                 )
                             )
@@ -486,9 +485,10 @@ fun HomeScreen(
                 ) {
                     DrawSensorGraph(viewModel = viewModel)
                 }
+
+                TableScreen(viewModel = viewModel, context = context)
             }
 
-            TableScreen()
         }
     }
 }
@@ -496,15 +496,15 @@ fun HomeScreen(
 
 
 @Composable
-fun TableScreen() {
+fun TableScreen(viewModel: HomeViewModelContract, context: CoroutineScope) {
     // Just a fake data... a Pair of Int and String
-    val tableData = (1..5).mapIndexed { index, item ->
+    val tableData = (1..7).mapIndexed { index, item ->
         index to "Item $index"
     }
 
     val forecast_hour = ForecastHour(Instant.now(), 23.00, 40, 3.00)
 
-    val list = MutableList(5) {index -> forecast_hour}
+    val list = MutableList(7) {index -> forecast_hour}
 
 //    Timber.i(list.toString())
 
@@ -512,7 +512,7 @@ fun TableScreen() {
 
 //    Timber.i(forecast_day.toString())
 
-    val forecast_list = MutableList(5) {index -> forecast_day}
+    val forecast_list = MutableList(7) {index -> forecast_day}
 
     // Each cell of a column must have the same weight.
     val column1Weight = .3f // 30%
@@ -521,16 +521,39 @@ fun TableScreen() {
 
 
 
-    Row(Modifier.background(Color.Gray)){
+    Row{
 
-        forecast_list.forEach {
-            TableCell(text = "${it.date.atZone(ZoneId.systemDefault()).dayOfWeek}", weight = column1Weight)
-
-        } }
+        forecast_list.indices.forEach {
+            TableCell(text = when (it) {
+                0 -> "Mon"
+                1 -> "Tue"
+                2 -> "Wed"
+                3 -> "Thu"
+                4 -> "Fri"
+                5 -> "Sat"
+                else -> "Sun"
+            },
+            weight = column1Weight,
+            onClick = {
+                context.launch {
+                    viewModel.changeDay(it)
+                }
+            }
+            )
+        }
+    }
     Row(){
 
-        forecast_list.forEach {
-            TableCell(text = "${it.uv}", weight = column1Weight)
+        forecast_list.indices.forEach {
+            TableCell(
+                text = "${forecast_list[it].uv}",
+                weight = column1Weight,
+                onClick = {
+                    context.launch {
+                        viewModel.changeDay(it)
+                    }
+                }
+            )
 
         } }
 }
@@ -543,16 +566,20 @@ fun TableScreen() {
 @Composable
 fun RowScope.TableCell(
     text: String,
-    weight: Float
+    weight: Float,
+    onClick: () -> Unit
 ) {
     Text(
         text = text,
         Modifier
-            .border(1.dp, Color.Black)
             .weight(weight)
+            .clickable { onClick }
             .padding(8.dp),
         fontSize = 10.sp,
+        style = TextStyle(
+            color = Color(0xFF754855)
         )
+    )
 }
 
 @Composable
